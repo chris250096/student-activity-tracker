@@ -1,0 +1,95 @@
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let currentFilter = "all";
+
+function save() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function addTask() {
+    let input = document.getElementById("taskInput");
+    if (input.value === "") return;
+
+    tasks.push({ name: input.value, completed: false });
+    input.value = "";
+    save();
+    display();
+}
+
+function display() {
+    let list = document.getElementById("taskList");
+    list.innerHTML = "";
+
+    let filtered = tasks.filter(task => {
+        if (currentFilter === "completed") return task.completed;
+        if (currentFilter === "pending") return !task.completed;
+        return true;
+    });
+
+    filtered.forEach((task, index) => {
+        let div = document.createElement("div");
+        div.className = "task";
+
+        div.innerHTML = `
+            <span class="${task.completed ? 'completed' : ''}">
+                ${task.name}
+            </span><br>
+            <button onclick="toggle(${index})">✔</button>
+            <button onclick="editTask(${index})">✏️</button>
+            <button onclick="deleteTask(${index})">🗑</button>
+        `;
+
+        list.appendChild(div);
+    });
+
+    updateProgress();
+}
+
+function toggle(i) {
+    tasks[i].completed = !tasks[i].completed;
+    save();
+    display();
+}
+
+function deleteTask(i) {
+    tasks.splice(i, 1);
+    save();
+    display();
+}
+
+function editTask(i) {
+    let newName = prompt("Edit task:", tasks[i].name);
+    if (newName) {
+        tasks[i].name = newName;
+        save();
+        display();
+    }
+}
+
+function filterTasks(type) {
+    currentFilter = type;
+    display();
+}
+
+function searchTask() {
+    let value = document.getElementById("search").value.toLowerCase();
+    let list = document.getElementById("taskList").children;
+
+    Array.from(list).forEach(item => {
+        item.style.display = item.innerText.toLowerCase().includes(value)
+            ? "block"
+            : "none";
+    });
+}
+
+function updateProgress() {
+    let done = tasks.filter(t => t.completed).length;
+    let total = tasks.length;
+
+    document.getElementById("progressText").innerText =
+        `${done} / ${total} Completed`;
+
+    let percent = total === 0 ? 0 : (done / total) * 100;
+    document.getElementById("fill").style.width = percent + "%";
+}
+
+display();

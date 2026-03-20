@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Master Student Tracker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Student Activity Tracker</h1>
+
+    <div class="top-bar">
+        <input type="text" id="taskInput" placeholder="Add activity...">
+        <button onclick="addTask()">Add</button>
+    </div>
+
+    <div class="filters">
+        <button onclick="filterTasks('all')">All</button>
+        <button onclick="filterTasks('completed')">Completed</button>
+        <button onclick="filterTasks('pending')">Pending</button>
+    </div>
+
+    <input type="text" id="search" placeholder="Search..." onkeyup="searchTask()">
+
+    <div id="taskList"></div>
+
+    <div class="progress">
+        <p id="progressText">0 / 0 Completed</p>
+        <div class="bar">
+            <div id="fill"></div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
